@@ -4,14 +4,14 @@ from sys import stdin
 input = stdin.readline
 n = int(input())
 
-slope_dict = {}
+slope_set = set()
 
 for _ in range(n):
     x, y = map(int, input().split())
-
     if y == 0:
-        slope_dict["infinite"] = True
-        continue
-    slope_dict[x / y] = True
+        slope = "infinite"
+    else:
+        slope = y / x
+    slope_set.add(slope)
 
-print(len(slope_dict))
+print(len(slope_set))
