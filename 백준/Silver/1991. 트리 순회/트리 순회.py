@@ -1,3 +1,12 @@
+"""
+Node class: Node 객체를 만드는 청사진이다.
+
+Node 객체: 단일 노드의 자식 관계의 구조를 정의한다.
+
+Node 객체를 담을 수 있는 공간, 트리
+    - Key: 노드 값, Value: 노드 객체(노드 구조 설명)
+"""
+
 class Node:
     def __init__(self, data, left_node, right_node):
         self.data = data
