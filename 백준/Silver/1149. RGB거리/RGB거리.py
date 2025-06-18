@@ -6,9 +6,8 @@ input = sys.stdin.readline
 
 def rgb_distance(n: int, matrix: List[int]) -> int:
     for i in range(1, n):
-        matrix[i][0] = matrix[i][0] + min(matrix[i-1][1], matrix[i-1][2])
-        matrix[i][1] = matrix[i][1] + min(matrix[i-1][0], matrix[i-1][2])
-        matrix[i][2] = matrix[i][2] + min(matrix[i-1][0], matrix[i-1][1])
+        for j in range(3):
+            matrix[i][j] += min(matrix[i-1][:j] + matrix[i-1][j+1:])
 
 
     distance = min(matrix[-1])
