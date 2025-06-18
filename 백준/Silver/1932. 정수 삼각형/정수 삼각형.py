@@ -1,25 +1,29 @@
-from sys import stdin
-input = stdin.readline
+import sys
+from typing import List
 
-n = int(input())
+input = sys.stdin.readline
 
-triangle = [list(map(int, input().split())) for _ in range(n)]
 
-dp_list = [triangle[0][0]]
-next_dp_list = []
+def max_cost(n: int, costs: List[int]):
+    dp_costs = [cost[:] for cost in costs]
 
-for line in range(n):
-    if line == n - 1:
-        break
-    for i, num in enumerate(dp_list):
-        if next_dp_list:
-            if next_dp_list[i] < dp_list[i] + triangle[line + 1][i]:
-                next_dp_list[i] = dp_list[i] + triangle[line + 1][i]
-        else:
-            next_dp_list.append(dp_list[i] + triangle[line + 1][i])
-        next_dp_list.append(dp_list[i] + triangle[line + 1][i + 1])
+    for i in range(1, n):
+        for j in range(len(dp_costs[i])):
+            if j == 0:
+                dp_costs[i][j] += dp_costs[i-1][j]
+                continue
 
-    dp_list = next_dp_list[:]
-    next_dp_list = []
+            if j == len(dp_costs[i]) - 1:
+                dp_costs[i][j] += dp_costs[i-1][-1]
+                continue
 
-print(max(dp_list))
+            dp_costs[i][j] += max(dp_costs[i-1][j-1], dp_costs[i-1][j])
+
+    return max(dp_costs[-1])
+
+                
+if __name__ == "__main__":
+    n = int(input())
+    costs = [list(map(int, input().split())) for _ in range(n)]
+    answer = max_cost(n, costs)
+    print(answer)
