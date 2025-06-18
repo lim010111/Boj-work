@@ -1,16 +1,22 @@
+import sys
 from typing import List
 
+input = sys.stdin.readline
 
-def rgb_distance(n: int, rgb_cost: List[List[int]]) -> int:
+
+def rgb_distance(n: int, matrix: List[int]) -> int:
     for i in range(1, n):
-        rgb_cost[i][0] += min(rgb_cost[i - 1][1], rgb_cost[i - 1][2])
-        rgb_cost[i][1] += min(rgb_cost[i - 1][0], rgb_cost[i - 1][2])
-        rgb_cost[i][2] += min(rgb_cost[i - 1][0], rgb_cost[i - 1][1])
-
-    return min(rgb_cost[-1])
+        matrix[i][0] = matrix[i][0] + min(matrix[i-1][1], matrix[i-1][2])
+        matrix[i][1] = matrix[i][1] + min(matrix[i-1][0], matrix[i-1][2])
+        matrix[i][2] = matrix[i][2] + min(matrix[i-1][0], matrix[i-1][1])
 
 
-n = int(input())
-rgb_cost = [list(map(int, input().split())) for _ in range(n)]
+    distance = min(matrix[-1])
 
-print(rgb_distance(n, rgb_cost))
+    return distance
+
+if __name__ == "__main__":
+    n = int(input())
+    matrix = [list(map(int, input().split())) for _ in range(n)]
+    distance = rgb_distance(n, matrix)
+    print(distance)
