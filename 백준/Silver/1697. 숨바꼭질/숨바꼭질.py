@@ -1,37 +1,47 @@
+# https://www.acmicpc.net/problem/1697
+# 숨바꼭질
+
 from collections import deque
 
-def bfs(start):
-    queue = deque([(start, 0)])
-    visited[start] = True
+def find(pos, target):
+
+    if pos == target:
+        return 0
+
+    if target < pos:
+        return pos - target
+
+    moves =  [-1, 1, 2]
+    visited = [False] * (2 * target + 1) if target <= 50000 else [False] * 100001
+
+    queue = deque([(pos, 0)])
+    visited[pos] = True
 
     while queue:
-        v, c = queue.popleft()
-        nv = 0
+        # print(queue)
+        p, t = queue.popleft()
 
         for i in range(3):
-            if i == 0:
-                nv = v + 1
-            if i == 1:
-                nv = v - 1
             if i == 2:
-                nv = v * 2
+                nxt_p = p * 2
+            else:
+                nxt_p = p + moves[i]
 
-            if nv > k + 1 or nv < 0:
+            if nxt_p < 0 or nxt_p > 2 * target or nxt_p > 100000:
+                continue
+
+            if visited[nxt_p]:
                 continue
             
-            if visited[nv]:
-                continue
-            
-            if nv == k:
-                return c + 1
-                
-            visited[nv] = True
-            queue.append((nv, c + 1))
+            if nxt_p == target:
+                return t + 1
 
-n, k = map(int, input().split())
+            visited[nxt_p] = True
+            queue.append((nxt_p, t + 1))
 
-if k > n:
-    visited = [False for _ in range(k + 2)]
-    print(bfs(n))
-else:
-    print(n - k)
+
+if __name__ == "__main__":
+    pos, target = map(int, input().split())
+
+    result = find(pos, target)
+    print(result)
