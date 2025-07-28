@@ -1,48 +1,41 @@
-import sys
 from collections import deque
-input = sys.stdin.readline
 
-
-def bfs():
-    queue = deque()
-    for i in range(n):
-        for j in range(m):
-            if graph[i][j] == 1:
-                queue.append((i, j, 0))
-                
-    if not queue:
-        return -1
-
+def min_days(rows, cols, storage):
+    # 익은 토마토 position 구한 후 대기열에 넣기
+    queue = deque([])
+    
+    for r in range(rows):
+        for c in range(cols):
+            if storage[r][c] == 1:
+                queue.append((r, c, 0))
+    # 대기열에 있는 토마토들 순회하며 bfs
+    
+    moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    last_day = 0
     while queue:
-        x, y, days = queue.popleft()
+        r, c, day = queue.popleft()
+        if day > last_day:
+            last_day = day
+        
+        for x, y in moves:
+            nr = r + x
+            nc = c + y
 
-        for i in range(4):
-            nx = x + dx[i]
-            ny = y + dy[i]
-
-            if nx < 0 or ny < 0 or nx > n - 1 or ny > m - 1:
+            if nr < 0 or nc < 0 or nr >= rows or nc >= cols:
                 continue
 
-            if graph[nx][ny] == 0:
-                graph[nx][ny] = 1
-
-                queue.append((nx, ny, days + 1))
-
-        if not queue:
-            for i in range(n):
-                for j in range(m):
-                    if graph[i][j] == 0:
-                        return -1
-                        
-            return days
-                
-
-m, n = map(int, input().split())
-graph = []
-for _ in range(n):
-    graph.append(list(map(int, input().split())))
-
-dx = [-1, 1, 0, 0]
-dy = [0, 0, -1, 1]
-
-print(bfs())
+            if storage[nr][nc] == 0:
+                storage[nr][nc] = 1
+                queue.append((nr, nc, day + 1))
+        
+    # 탐색이 모두 끝나면 다 익음. return
+    for r in range(rows):
+        for c in range(cols):
+            if storage[r][c] == 0:
+                return -1
+    return last_day
+    
+if __name__ == "__main__":
+    cols, rows = map(int, input().split()) # 열, 행
+    storage = [list(map(int, input().split())) for _ in range(rows)]
+    print(min_days(rows, cols, storage))
