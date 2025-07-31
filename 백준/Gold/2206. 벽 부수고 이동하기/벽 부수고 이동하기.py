@@ -1,44 +1,49 @@
-import sys
 from collections import deque
+import sys
 
 input = sys.stdin.readline
 
+def shortest_path():
+    movements = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    visited = [[[False, False] for _ in range(columns)] for _ in range(rows)]
 
-def bfs():
     queue = deque()
     queue.append((0, 0, 1, True))
+    visited[0][0][0] = True
 
     while queue:
-        x, y, count, can_break = queue.popleft()
+        # print()
+        # [print(''.join(elem)) for elem in matrix]
+        r, c, move, breakable = queue.popleft()
 
-        if (x, y) == (n - 1, m - 1):
-            return count
+        if (r, c) == (rows - 1, columns - 1):
+            return move
 
-        for i in range(4):
-            nx = x + dx[i]
-            ny = y + dy[i]
+        for x, y in movements:
+            nr = r + x
+            nc = c + y
 
-            if nx < 0 or ny < 0 or nx > n - 1 or ny > m - 1:
+            if nr < 0 or nc < 0 or nr >= rows or nc >= columns:
                 continue
 
-            if graph[nx][ny] == 0 and not visited[nx][ny][can_break]:
-                visited[nx][ny][can_break] = True
-                queue.append((nx, ny, count + 1, can_break))
+            if not breakable:
+                if not visited[nr][nc][1] and matrix[nr][nc] == '0':
+                    visited[nr][nc][1] = True
+                    queue.append((nr, nc, move + 1, False))
 
-            if graph[nx][ny] == 1 and can_break:
-                queue.append((nx, ny, count + 1, False))
-
+            else:
+                if not visited[nr][nc][0]:
+                    if matrix[nr][nc] == '1':
+                        visited[nr][nc][1] = True
+                        queue.append((nr, nc, move + 1, False))
+        
+                    else:
+                        visited[nr][nc][0] = True
+                        queue.append((nr, nc, move + 1, True))
     return -1
 
-n, m = map(int, input().split())
 
-graph = []
-visited = [[[False, False] for _ in range(m)] for _ in range(n)]
-
-for _ in range(n):
-    graph.append(list(map(int, input().rstrip())))
-
-dx = [-1, 1, 0, 0]
-dy = [0, 0, -1, 1]
-
-print(bfs())
+if __name__ == "__main__":
+    rows, columns = map(int, input().split())
+    matrix = [list(input().rstrip()) for _ in range(rows)]
+    print(shortest_path())
