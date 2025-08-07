@@ -6,7 +6,8 @@ def print_self_numbers() -> None:
         d_num = num + sum(map(int, list(str(num))))
         numbers -= {d_num}
         
-    print(*sorted(numbers), sep="\n")
+    for num in sorted(numbers):
+        print(num)
 
 if __name__ == "__main__":
     print_self_numbers()
