@@ -1,20 +1,21 @@
-from typing import List
 from collections import deque
 
+def solution(numbers, target):
+    methods = 0
+    queue = deque([(0, 0)])
+    
+    while queue:
+        num, operation_counts = queue.popleft()
+        for x in [-1, 1]:
+            nxt_num = num + numbers[operation_counts] * x
+            
+            if operation_counts == len(numbers) - 1:
+                if nxt_num == target:
+                    methods += 1
+                continue
+                    
+            queue.append((nxt_num, operation_counts + 1))
+            
+        
 
-def solution(numbers: List[int], target: int) -> int:
-    answer = 0
-
-    def find(index, s):
-        nonlocal answer
-        if index == len(numbers):
-            if s == target:
-                answer += 1
-            return
-
-        find(index + 1, s + numbers[index])
-        find(index + 1, s - numbers[index])
-
-    find(0, 0)
-
-    return answer
+    return methods
