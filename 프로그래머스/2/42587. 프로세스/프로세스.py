@@ -2,18 +2,16 @@ from collections import deque
 
 def solution(priorities, location):
     count = 0
-    priorities_queue = deque(priorities)
-    location_queue = deque(range(len(priorities)))
+    queue = deque(enumerate(priorities))
 
-    while priorities_queue:
-        cur_priority = priorities_queue.popleft()
-        cur_location = location_queue.popleft()
+    while queue:
+        initial_location, priority = queue.popleft()
 
-        if priorities_queue and cur_priority < max(priorities_queue):
-            priorities_queue.append(cur_priority)
-            location_queue.append(cur_location)
+        if queue and priority < max(queue, key=lambda x: x[1])[1]: # empty queue 예외처리
+            queue.append((initial_location, priority))
             continue
 
         count += 1
-        if location == cur_location:
+        
+        if location == initial_location:
             return count
