@@ -1,25 +1,26 @@
-from typing import List
 from collections import deque
+import math
 
-def solution(progresses: List[int], speeds: List[int]) -> List[int]:
+def solution(progresses, speeds):
+    answer = []
 
-    progresses = deque(progresses)
-    speeds = deque(speeds)
+    n = len(progresses)
+    remain_times = [math.ceil((100 - progresses[i]) / speeds[i]) for i in range(n)]
+    
+    cur_remain_time = remain_times[0]
+    queue = deque(remain_times[1:])
+    streak = 1
+    while queue:
+        remain_time = queue.popleft()
 
-    result = []
-    release = 0
+        if cur_remain_time >= remain_time:
+            streak += 1
 
-    while progresses:
-        while progresses and progresses[0] >= 100:
-            progresses.popleft()
-            speeds.popleft()
-            release += 1
-        
-        if release != 0: 
-            result.append(release)
-            release = 0
+        else:
+            cur_remain_time = remain_time
+            answer.append(streak)
+            streak = 1
 
-        for i in range(len(progresses)):
-            progresses[i] += speeds[i]
+    answer.append(streak)
 
-    return result
+    return answer
