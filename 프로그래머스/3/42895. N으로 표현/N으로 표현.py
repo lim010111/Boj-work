@@ -29,7 +29,7 @@ def solution(N, number):
                     if next_num not in cost_dict:
                         cost_dict[next_num] = cost_dict[cur_num] + cost
                         queue.append(next_num)
-                    
+
                     else:
                         cost_dict[next_num] = min(
                             cost_dict[next_num], cost_dict[cur_num] + cost
@@ -39,5 +39,5 @@ def solution(N, number):
                 pass
     if number in cost_dict:
         return cost_dict[number]
-    else: 
-        return -1 
+    else:
+        return -1
