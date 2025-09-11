@@ -1,91 +1,43 @@
 from collections import deque
 
 def solution(N, number):
-    target = number
+    init_nums = {int(str(N) * i):i for i in range(1, len(str(number * N)) + 1)}
 
-    len_limit_number = len(str(target * N))
-    init_nums = [int(str(N) * len) for len in range(1, len_limit_number + 1)]
-    queue = deque(init_nums)
+    queue = deque(init_nums.keys())
 
-    # dict: {사용된 숫자: N 사용 횟수}
-    used_number = {num: len(str(num)) for num in queue}
+    cost_dict = {key:value for key,value in init_nums.items()}
 
-    print(queue)
     while queue:
         cur_num = queue.popleft()
-        if used_number[cur_num] == 8:
-            continue
 
-        if cur_num == target:
-            return used_number[cur_num]
+        for init_num, cost in init_nums.items():
 
-        try:
-            for init_num in init_nums:
-                for nxt_num in [
+            # 다음 연산이 cost를 넘기게 되면 탈출
+            if cost_dict[cur_num] + cost > 8:
+                break
+
+            try:
+                next_nums = [
                     cur_num + init_num,
                     cur_num - init_num,
                     cur_num * init_num,
                     cur_num // init_num,
-                    init_num // cur_num,
                     init_num - cur_num,
-                    ]:
-                    for sign in [-1, -1]:
-                        nxt_num *= sign
-
-                        if nxt_num > 32000 or nxt_num < -N:
-                            continue
-
-
-                        if nxt_num not in used_number:
-                            used_number[nxt_num] = used_number[cur_num] + len(str(init_num))
-                            if nxt_num == target:
-                                if any(
-                                    used_number[nxt_num] - 1 > used_number[num] for num in queue
-                                ):
-                                    continue
-                                return used_number[nxt_num] if used_number[nxt_num] <= 8 else -1
-                            queue.append(nxt_num)
-
-                        else:
-                            used_number[nxt_num] = min(
-                                used_number[nxt_num], used_number[cur_num] + len(str(init_num))
-                            )
-
-        except ZeroDivisionError:
-            pass
-        
-        try:
-            for init_num in init_nums:
-                for nxt_num in [
-                    cur_num + (init_num // N),
-                    cur_num - (init_num // N),
-                    cur_num * (init_num // N),
-                    cur_num // (init_num // N),
-                    (init_num // N) // cur_num,
-                    (init_num // N) - cur_num,
-                    ]:
-                    for sign in [-1, -1]:
-                            nxt_num *= sign
-
-                            if nxt_num > 32000 or nxt_num < -N:
-                                continue
-
-
-                            if nxt_num not in used_number:
-                                used_number[nxt_num] = used_number[cur_num] + len(str(init_num)) + 1
-                                if nxt_num == target:
-                                    if any(
-                                        used_number[nxt_num] - 1 > used_number[num] for num in queue
-                                    ):
-                                        continue
-                                    return used_number[nxt_num] if used_number[nxt_num] <= 8 else -1
-                                queue.append(nxt_num)
-
-                            else:
-                                used_number[nxt_num] = min(
-                                    used_number[nxt_num], used_number[cur_num] + len(str(init_num)) + 1
-                                )
-        except ZeroDivisionError:
-            pass
+                    init_num // cur_num,
+                ]
+                for next_num in next_nums:
+                    if next_num not in cost_dict:
+                        cost_dict[next_num] = cost_dict[cur_num] + cost
+                        queue.append(next_num)
                     
-    return used_number[target] if used_number[target] <= 8 else -1
+                    else:
+                        cost_dict[next_num] = min(
+                            cost_dict[next_num], cost_dict[cur_num] + cost
+                        )
+
+            except ZeroDivisionError:
+                pass
+    if number in cost_dict:
+        return cost_dict[number]
+    else: 
+        return -1 
