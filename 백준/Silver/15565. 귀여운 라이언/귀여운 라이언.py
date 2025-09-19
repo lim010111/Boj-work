@@ -4,13 +4,9 @@ input = stdin.readline
 
 
 def solution():
-    indices_lion, lions = [], 0
-    for idx, doll in enumerate(dolls):
-        if doll == "1":
-            indices_lion.append(idx)
-            lions += 1
+    indices_lion = [i for i in range(N) if dolls[i] == "1"]
 
-    if K > lions:
+    if K > len(indices_lion):
         return -1
 
     min_size = float("inf")
