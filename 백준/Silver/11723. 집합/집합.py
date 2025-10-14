@@ -1,10 +1,9 @@
 import sys
-from typing import Set
 
 input = sys.stdin.readline
 
 
-def process(st: Set, command: str, elem) -> None:
+def process(st: set, command: str, elem) -> None:
     if command == 'add':
         st.add(elem)
 
@@ -24,9 +23,6 @@ def process(st: Set, command: str, elem) -> None:
             st.remove(elem)
         else:
             st.add(elem)
-    
-    return
-
 
 if __name__ == "__main__":
     st = set()
